@@ -10,20 +10,20 @@ class Colleague {
   }
 
   send(message) {
-    mediator.send(message, this);
+    this.mediator.send(message, this);
   }
 
   notify(message) {
     const s = JSON.stringify({ notify: message });
     throw new Error('Method is not implemented: ' + s);
-  };
+  }
 }
 
 class Mediator {
   send(message, sender) {
-    const s = JSON.stringify({ send: message });
+    const s = JSON.stringify({ send: { message, sender } });
     throw new Error('Method is not implemented: ' + s);
-  };
+  }
 }
 
 class ConcreteColleague1 extends Colleague {
@@ -49,14 +49,14 @@ class ConcreteColleague2 extends Colleague {
 }
 
 class ConcreteMediator extends Mediator {
-  constructor(mediator) {
+  constructor() {
     super();
     this.colleague1 = null;
     this.colleague2 = null;
   }
 
   send(message, sender) {
-    if (sender = this.colleague2) {
+    if (sender === this.colleague2) {
       this.colleague1.notify(message);
     } else {
       this.colleague2.notify(message);
