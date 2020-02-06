@@ -29,6 +29,7 @@ class Mediator {
 class ConcreteColleague1 extends Colleague {
   constructor(mediator) {
     super(mediator);
+    mediator.colleague1 = this;
   }
 
   notify(message) {
@@ -39,6 +40,7 @@ class ConcreteColleague1 extends Colleague {
 class ConcreteColleague2 extends Colleague {
   constructor(mediator) {
     super(mediator);
+    mediator.colleague2 = this;
   }
 
   notify(message) {
@@ -51,14 +53,6 @@ class ConcreteMediator extends Mediator {
     super();
     this.colleague1 = null;
     this.colleague2 = null;
-  }
-
-  setColleague1(colleague) {
-    this.colleague1 = colleague;
-  }
-
-  setColleague2(colleague) {
-    this.colleague2 = colleague;
   }
 
   send(message, sender) {
@@ -75,9 +69,7 @@ class ConcreteMediator extends Mediator {
 const mediator = new ConcreteMediator();
 const colleague1 = new ConcreteColleague1(mediator);
 const colleague2 = new ConcreteColleague2(mediator);
-
-mediator.setColleague1(colleague1);
-mediator.setColleague2(colleague2);
+console.dir(mediator);
 
 colleague1.send('Ping');
 colleague2.send('Pong');
