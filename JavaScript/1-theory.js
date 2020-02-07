@@ -3,7 +3,7 @@
 class Colleague {
   constructor(mediator) {
     const proto = Object.getPrototypeOf(this);
-    if (proto === Colleague) {
+    if (proto.constructor === Colleague) {
       throw new Error('Abstract class should not be instanciated');
     }
     this.mediator = mediator;
