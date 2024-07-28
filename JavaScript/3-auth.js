@@ -1,30 +1,34 @@
 'use strict';
 
-class Accounts {
-  constructor() {
-    this.users = new Map();
-  }
+class Auth {
+  #users = new Map();
 
   createUser(login, password, group) {
-    this.users.set(login, { login, password, group });
+    this.#users.set(login, { login, password, group });
   }
 
   checkUserPassword(login, password) {
-    const account = this.users.get(login);
+    const account = this.#users.get(login);
     if (!account) return false;
     return account.password === password;
   }
 
   getUserGroup(login) {
-    const account = this.users.get(login);
+    const account = this.#users.get(login);
     if (!account) return undefined;
     return account.group;
   }
 }
 
 class Logger {
+  static #COLORS = {
+    warn: '\x1b[1;33m',
+    error: '\x1b[0;31m',
+    info: '\x1b[1;37m',
+  };
+
   static color(level) {
-    return Logger.COLORS[level] || Logger.COLORS.info;
+    return Logger.#COLORS[level] || Logger.#COLORS.info;
   }
 
   log(level, s) {
@@ -46,17 +50,11 @@ class Logger {
   }
 }
 
-Logger.COLORS = {
-  warn: '\x1b[1;33m',
-  error: '\x1b[0;31m',
-  info: '\x1b[1;37m',
-};
-
 // Mediator
 
-class Authenticator {
-  constructor(accounts, logger) {
-    this.accounts = accounts;
+class Security {
+  constructor(auth, logger) {
+    this.auth = auth;
     this.logger = logger;
   }
 
@@ -65,7 +63,7 @@ class Authenticator {
       this.logger.error('No login or password passed to auth');
       return false;
     }
-    const valid = this.accounts.checkUserPassword(login, password);
+    const valid = this.auth.checkUserPassword(login, password);
     if (!valid) {
       this.logger.warn(`Password is not valid for ${login}`);
       return false;
@@ -77,14 +75,14 @@ class Authenticator {
 
 // Usage
 
-const accounts = new Accounts();
-accounts.createUser('marcus', '12345', 'emperors');
+const auth = new Auth();
+auth.createUser('marcus', '12345', 'emperors');
 
 const logger = new Logger();
 
-const authenticator = new Authenticator(accounts, logger);
-console.dir(authenticator);
+const sec = new Security(auth, logger);
+console.dir(sec);
 
-authenticator.check('marcus');
-authenticator.check('marcus', 'qwerty');
-authenticator.check('marcus', '12345');
+sec.check('marcus');
+sec.check('marcus', 'qwerty');
+sec.check('marcus', '12345');
