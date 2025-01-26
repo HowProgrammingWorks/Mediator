@@ -14,62 +14,64 @@ class Colleague {
   }
 
   notify(message) {
+    const entity = this.constructor.name;
     const s = JSON.stringify({ notify: message });
-    throw new Error('Method is not implemented: ' + s);
+    throw new Error(`Method "notify" is not implemented for ${entity}: ${s}`);
   }
 }
 
 class Mediator {
   send(message, sender) {
+    const entity = this.constructor.name;
     const s = JSON.stringify({ send: { message, sender } });
-    throw new Error('Method is not implemented: ' + s);
+    throw new Error(`Method "send" is not implemented for ${entity}: ${s}`);
   }
 }
 
-class ConcreteColleague1 extends Colleague {
+class Employee extends Colleague {
   constructor(mediator) {
     super(mediator);
-    mediator.colleague1 = this;
+    mediator.employee = this;
   }
 
   notify(message) {
-    console.log('Colleague1 gets message: ' + message);
+    const entity = this.constructor.name;
+    console.log(`${entity} gets message: ${message}`);
   }
 }
 
-class ConcreteColleague2 extends Colleague {
+class Manager extends Colleague {
   constructor(mediator) {
     super(mediator);
-    mediator.colleague2 = this;
+    mediator.manager = this;
   }
 
   notify(message) {
-    console.log('Colleague2 gets message: ' + message);
+    const entity = this.constructor.name;
+    console.log(`${entity} gets message: ${message}`);
   }
 }
 
-class ConcreteMediator extends Mediator {
+class Messenger extends Mediator {
   constructor() {
     super();
-    this.colleague1 = null;
-    this.colleague2 = null;
+    this.employee = null;
+    this.manager = null;
   }
 
   send(message, sender) {
-    if (sender === this.colleague2) {
-      this.colleague1.notify(message);
-    } else {
-      this.colleague2.notify(message);
-    }
+    const { employee, manager } = this;
+    const target = sender === manager ? employee : manager;
+    target.notify(message);
   }
 }
 
 // Usage
 
-const mediator = new ConcreteMediator();
-const colleague1 = new ConcreteColleague1(mediator);
-const colleague2 = new ConcreteColleague2(mediator);
+const mediator = new Messenger();
+const employee = new Employee(mediator);
+const manager = new Manager(mediator);
 console.dir(mediator);
 
-colleague1.send('Ping');
-colleague2.send('Pong');
+employee.send('Ping');
+manager.send('Pong');

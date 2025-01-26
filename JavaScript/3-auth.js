@@ -15,7 +15,7 @@ class Auth {
 
   getUserGroup(login) {
     const account = this.#users.get(login);
-    if (!account) return undefined;
+    if (!account) return null;
     return account.group;
   }
 }
@@ -31,10 +31,12 @@ class Logger {
     return Logger.#COLORS[level] || Logger.#COLORS.info;
   }
 
-  log(level, s) {
-    const date = new Date().toISOString();
-    const color = Logger.color(level);
-    console.log(color + date + '\t' + s + '\x1b[0m');
+  constructor() {
+    this.log = (level, s) => {
+      const date = new Date().toISOString();
+      const color = Logger.color(level);
+      console.log(color + date + '\t' + s + '\x1b[0m');
+    };
   }
 
   warn(s) {

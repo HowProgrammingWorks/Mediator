@@ -18,7 +18,7 @@ const auth = (() => {
 
   const getUserGroup = (login) => {
     const account = users.get(login);
-    if (!account) return undefined;
+    if (!account) return null;
     return account.group;
   };
 
@@ -28,7 +28,7 @@ const auth = (() => {
 // Logger service
 // can be placed in a separate file and imported here
 
-const Logger = class {
+class Logger {
   static #COLORS = {
     warn: '\x1b[1;33m',
     error: '\x1b[0;31m',
@@ -39,10 +39,12 @@ const Logger = class {
     return Logger.#COLORS[level] || Logger.#COLORS.info;
   }
 
-  log(level, s) {
-    const date = new Date().toISOString();
-    const color = Logger.color(level);
-    console.log(color + date + '\t' + s + '\x1b[0m');
+  constructor() {
+    this.log = (level, s) => {
+      const date = new Date().toISOString();
+      const color = Logger.color(level);
+      console.log(color + date + '\t' + s + '\x1b[0m');
+    };
   }
 
   warn(s) {
@@ -56,7 +58,7 @@ const Logger = class {
   info(s) {
     this.log('info', s);
   }
-};
+}
 
 // Mediator
 

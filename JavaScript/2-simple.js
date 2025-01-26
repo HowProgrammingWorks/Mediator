@@ -10,49 +10,49 @@ class Colleague {
   }
 }
 
-class Colleague1 extends Colleague {
+class Employee extends Colleague {
   constructor(mediator) {
     super(mediator);
-    mediator.colleague1 = this;
+    mediator.employee = this;
   }
 
   notify(message) {
-    console.log('Colleague1 gets message: ' + message);
+    if (!this.mediator) throw new Error('Mediator is not set');
+    console.log('Employee gets message: ' + message);
   }
 }
 
-class Colleague2 extends Colleague {
+class Manager extends Colleague {
   constructor(mediator) {
     super(mediator);
-    mediator.colleague2 = this;
+    mediator.manager = this;
   }
 
   notify(message) {
-    console.log('Colleague2 gets message: ' + message);
+    if (!this.mediator) throw new Error('Mediator is not set');
+    console.log('Manager gets message: ' + message);
   }
 }
 
 class Mediator {
   constructor() {
-    this.colleague1 = null;
-    this.colleague2 = null;
+    this.employee = null;
+    this.manager = null;
   }
 
   send(message, sender) {
-    if (sender === this.colleague2) {
-      this.colleague1.notify(message);
-    } else {
-      this.colleague2.notify(message);
-    }
+    const { employee, manager } = this;
+    const target = sender === manager ? employee : manager;
+    target.notify(message);
   }
 }
 
 // Usage
 
 const mediator = new Mediator();
-const colleague1 = new Colleague1(mediator);
-const colleague2 = new Colleague2(mediator);
+const employee = new Employee(mediator);
+const manager = new Manager(mediator);
 console.dir(mediator);
 
-colleague1.send('Ping');
-colleague2.send('Pong');
+employee.send('Ping');
+manager.send('Pong');
